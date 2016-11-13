@@ -37,6 +37,9 @@ angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController'
 	         		//计算个税
 	         		this.gongjijin = this.jishu * this.mingxis[0].gerenRate / 100;
 	         		var yingnashui = this.shuiqian - this.gongjijin - 3500;
+					if(yingnashui<0){
+						this.geshui=0;
+					}
 	         		if(0 < yingnashui && yingnashui <= 1500){
 	         			this.geshui = yingnashui * 3 / 100;
 	         		}
