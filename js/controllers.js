@@ -71,8 +71,8 @@ angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController'
 					//var part2 = document.getElementById("part2");
 					//part2.top=0;
 					// the element you wish to scroll to.
-					if ($location.hash() !== 'part2') {
-						$location.hash('part2');
+					if ($location.hash() !== 'part3') {
+						$location.hash('part3');
 						$anchorScroll();
 					}else{
 						// call $anchorScroll() explicitly,
