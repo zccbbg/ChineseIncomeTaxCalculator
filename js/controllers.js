@@ -1,10 +1,9 @@
-angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController', 
-		function($scope) {
+angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController', ['$scope', '$location', '$anchorScroll',
+		function($scope, $location, $anchorScroll){
 	         $scope.pit={
 					mingxis:(function(){
 	         		var mingxis = [];
 	         		mingxis[0] = {
-	         			name:'缴纳五险一金比例',
 	         			gerenRate: 18.5,
 	         			danweiRate: 28
 	         		};
@@ -19,8 +18,20 @@ angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController'
 				zongji:0,
 	         	history:[],
 	         	gongjijin:0,
+				 isShow:false,
 				 changejishu:function(){
 					 this.jishu=this.shuiqian;
+				 },
+				 showPart2:function(){
+					 // the element you wish to scroll to.
+					 if ($location.hash() !== 'part3') {
+						 $location.hash('part3');
+						 $anchorScroll();
+					 }else{
+						 // call $anchorScroll() explicitly,
+						 // since $location.hash hasn't changed
+						 $anchorScroll();
+					 }
 				 },
 	         	getTax: function(){
 	         		//计算个税
@@ -53,16 +64,23 @@ angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController'
 	         		this.geren = this.gongjijin;
 	         		this.danwei = this.shuiqian * (this.mingxis[0].danweiRate) /100;
 					this.zongji=this.gongjijin+this.geshui;
-	         		//历史
-	         		if(this.history.length === 0){
-	         			this.history[0] = this.shuiqian;
-	         		}
-	         		else{
-	         			this.history.unshift(this.shuiqian);
-	         			if(this.history.length > 10){
-	         				this.history.length = 10;
-	         			}
-	         		}
-	         	}
+					this.isShow=true;
+					//angular.element("body").scrollTop= angular.element("#part2").offset().top;
+					//angular.element(document.querySelectorAll("#part2"))[0].scrollTop = 0;
+					//angular.element(document.querySelectorAll("body")).animate({scrollTop: angular.element(document.querySelectorAll("#part2")).offset().top}, "slow");
+					//var part2 = document.getElementById("part2");
+					//part2.top=0;
+					// the element you wish to scroll to.
+					if ($location.hash() !== 'part2') {
+						$location.hash('part2');
+						$anchorScroll();
+					}else{
+						// call $anchorScroll() explicitly,
+						// since $location.hash hasn't changed
+						$anchorScroll();
+					}
+					// call $anchorScroll()
+					//$anchorScroll();
+				}
 	         };
-	    });
+	    }]);

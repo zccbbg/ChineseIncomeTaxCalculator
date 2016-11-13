@@ -42,18 +42,13 @@
 	background-color: #ccffff;
 }
 
-#history_wrap{
-	float: left;
-}
-
 .history{
 	background-color: #ccffff;
 }
-
-#detail{
-	clear: left;
+input{
+	height: 50px;
+	width: 60px;
 }
-
 /*
 .rate{
 width:50px;
