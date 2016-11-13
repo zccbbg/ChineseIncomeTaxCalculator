@@ -1,0 +1,295 @@
+<!doctype html>
+<html ng-app='PersonalIncomeTax'>
+<head>
+    <title>个税计算器-橙子博客</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap-3.3.4-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/personalIncomeTax.css">
+    <script type="text/javascript" src='js/lib/angular/angular.js'></script>
+    <script type="text/javascript" src='js/controllers.js'></script>
+</head>
+<body>
+<h1 align="center">个税计算器</h1>
+<hr>
+<h2 align="center">请输入</h2>
+<div ng-controller='PersonalIncomeTaxController' class='main'>
+    <div id="history_wrap">
+        <div id="part1">
+            <div id="input">
+                <div>
+                    <label style="font-size: large">请输入税前工资：</label>
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model='pit.shuiqian'
+                               ng-change="pit.changejishu()"></input><span class="input-group-addon">元</span>
+                    </div>
+                    <label style="font-size: large">请输入五险一金缴费基数：</label>
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model='pit.jishu'></input><span
+                            class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="detail">
+                <label style="font-size: large">请核对五险一金缴费比例(视具体地方政策而定，个人比例一般在20%左右)：</label>
+                <table class="table table-striped">
+                    <thead>
+                    <th>缴费项目</th>
+                    <th>缴纳五险一金比例</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='mingxi in pit.mingxis'>
+                        <td>个人比例</td>
+                        <td>
+                            <div class="input-group">
+                                <input class="form-control" ng-model='mingxi.gerenRate' type="number"
+                                       class="rate"></input><span class="input-group-addon">%</span>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr ng-repeat='mingxi in pit.mingxis'>
+                        <td>
+                            单位比例
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input class="form-control" ng-model='mingxi.danweiRate' type="number"
+                                       class="rate"></input><span
+                                    class="input-group-addon">%</span>
+                            </div>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+                <div align="center">
+                    <button align="center" ng-click='pit.getTax()'>
+                        <span style="font-size: large">开始计算</span>
+                    </button>
+                </div>
+            </div>
+            <hr>
+        </div><!--第一部分结束-->
+        <div id="part3"></div>
+        <div id="part2" ng-show="pit.isShow"  >
+            <h2 align="center">计算结果</h2>
+            <div id="shebaogongjijin_wrap">
+                <table class="table table-striped">
+                    <thead>
+                    <th>项目</th>
+                    <th>金额</th>
+                    </thead>
+                    <tbody>
+                        <tr><td>单位缴纳五险一金</td><td><input class="shebaogongjijin" ng-model='pit.danwei' disabled="disabled"></td></tr>
+                        <tr><td>个人缴纳五险一金</td><td><input class="shebaogongjijin" ng-model='pit.geren' disabled="disabled"></td></tr>
+                        <tr><td>应缴个税</td><td><input class="shebaogongjijin" ng-model='pit.geshui' disabled="disabled"></td></tr>
+                        <tr><td>个人应缴总计（五险一金+个税）</td><td><input class="shebaogongjijin" ng-model='pit.zongji' disabled="disabled"></td></tr>
+                        <tr><td>税后工资</td><td><input class="shebaogongjijin" ng-model='pit.shuihou' disabled="disabled"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+            <h2 align="center">计算公式</h2>
+            <!--工资、薪金所得适用个人所得税累进税率表开始-->
+            <table class="table table-striped">
+                <colgroup>
+                    <col style="WIDTH: 35pt; mso-width-source: userset; mso-width-alt: 1472">
+                    <col style="WIDTH: 163pt; mso-width-source: userset; mso-width-alt: 6944">
+                    <col style="WIDTH: 155pt; mso-width-source: userset; mso-width-alt: 6624">
+                    <col style="WIDTH: 53pt; mso-width-source: userset; mso-width-alt: 2272">
+                    <col style="WIDTH: 54pt">
+                </colgroup>
+                <tbody>
+                <tr height="" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl66" height="80" rowspan="2"
+                        style="border-right: 1pt solid black; border-width: 1pt; border-style: solid; border-color: black; width: 35pt; height: 60pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3"><strong>级数</strong></font></td>
+                    <td class="xl67" colspan="2"
+                        style="border-right: 1pt solid black; border-top: 1pt solid black; border-color: black; width: 318pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="424">
+                        <font color="#333333" face="宋体" size="3"><strong>全月应纳税所得额</strong></font></td>
+                    <td class="xl66" rowspan="2"
+                        style="border-right: 1pt solid black; border-width: 1pt; border-style: solid; border-color: black; width: 53pt; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3"><strong>税率(%)</strong></font></td>
+                    <td class="xl66" rowspan="2"
+                        style="border-right: 1pt solid black; border-width: 1pt; border-style: solid; border-color: black; width: 54pt; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3"><strong>速算扣除数</strong></font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl70" height="40"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3"><strong>含税级距</strong></font></td>
+                    <td class="xl70"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <strong><font color="#333333" face="宋体" size="3">不含税级距</font></strong></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">1</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">不超过1500元的</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">不超过1455元的</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">3</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">0</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">2</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过1500元至4500元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过1455元至4155元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">10</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">105</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">3</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过4500元至9000元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过4155元至7755元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">20</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">555</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">4</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过9000元至35000元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过7755元至27255元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">25</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">1005</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">5</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过35000元至55000元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过27255元至41255元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">30</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">2755</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">6</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过55000元至80000元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过41255元至57505元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">35</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">5505</font></td>
+                </tr>
+                <tr height="40" style="HEIGHT: 30pt; mso-height-source: userset">
+                    <td class="xl71" height="40"
+                        style="border-right: 1pt solid black; border-left: 1pt solid black; width: 35pt; border-color: black; border-bottom: 1pt solid black; height: 30pt; background-color: transparent; text-align: center;"
+                        width="46">
+                        <font color="#333333" face="宋体" size="3">7</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 163pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="217">
+                        <font color="#333333" face="宋体" size="3">超过80000元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 155pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="207">
+                        <font color="#333333" face="宋体" size="3">超过57505元的部分</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 53pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="71">
+                        <font color="#333333" face="宋体" size="3">45</font></td>
+                    <td class="xl71"
+                        style="border-right: 1pt solid black; border-color: black; width: 54pt; border-bottom: 1pt solid black; background-color: transparent; text-align: center;"
+                        width="72">
+                        <font color="#333333" face="宋体" size="3">13505</font></td>
+                </tr>
+                </tbody>
+            </table>
+            <!--工资、薪金所得适用个人所得税累进税率表结束-->
+        </div><!--第二部分结束-->
+    </div>
+</div>
+</body>
+</html>
