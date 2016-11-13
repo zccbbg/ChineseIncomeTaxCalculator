@@ -1,5 +1,5 @@
-angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController', ['$scope', '$location', '$anchorScroll',
-		function($scope, $location, $anchorScroll){
+angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController', ['$scope', '$location', '$anchorScroll','$sce',
+		function($scope, $location, $anchorScroll,$sce){
 	         $scope.pit={
 					mingxis:(function(){
 	         		var mingxis = [];
@@ -82,33 +82,33 @@ angular.module('PersonalIncomeTax', []).controller('PersonalIncomeTaxController'
 					//part2.top=0;
 					// the element you wish to scroll to.
 					if (this.level>0){
-						this.desc="您属于第"+this.level+"等级，计算公式："
+						this.desc="您属于第"+this.level+"等级。计算公式如下：<br>";
 						switch(this.level)
 						{
 							case 1:
-								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*3%；具体计算"+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*3%="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*3%；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*3%="+this.shuihou;
 								break;
 							case 2:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*10%+105；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*10%+105="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*10%+105；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*10%+105="+this.shuihou;
 								break;
 							case 3:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*20%+555；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*20%+555="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*20%+555；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*20%+555="+this.shuihou;
 								break;
 							case 4:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*25%+1005；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*25%+1005="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*25%+1005；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*25%+1005="+this.shuihou;
 								break;
 							case 5:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*30%+2755；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*30%+2755="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*30%+2755；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*30%+2755="+this.shuihou;
 								break;
 							case 6:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*35%+5055；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*35%+5055="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*35%+5055；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*35%+5055="+this.shuihou;
 								break;
 							case 7:
-								this.desc+=this.desc+"税前工资-五险一金-（税前工资-五险一金）*45%+13505；具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*45%+13505="+this.shuihou;
+								this.desc=this.desc+"税前工资-五险一金-（税前工资-五险一金）*45%+13505；<br>具体计算："+this.shuiqian+"-"+this.gongjijin+"-("+this.shuiqian+"-"+this.gongjijin+")"+"*45%+13505="+this.shuihou;
 								break;
 						}
 					}
-
+					$scope.desc=$sce.trustAsHtml(this.desc);
 					if ($location.hash() !== 'part3') {
 						$location.hash('part3');
 					}else{
